@@ -55,11 +55,17 @@ while True:
 
     year += 1
     turn_demand = demand()
-    print "The great leader commands you produce %d tons of steel this month!"
-        % turn_demand
+    print "The great leader commands you produce %d tons of steel this month!" % turn_demand
     for w in range(3):
         print "Do what?"
-        print "(B)uild // (H)ire workers // (S)ell resources // (B)uy resources"
+        print "(B)uild // (H)ire workers // (S)ell resources // (B)uy resources // (E)nd turn"
         action = raw_input("Do what?")
-        if action = "I"
+        if action == "I":
+            pass
+        elif action == "H":
+            pass
+        elif action == "S":
+            pass
+        elif action == "B":
+            pass
     raw_input("> ")
