@@ -53,5 +53,6 @@ orders = {
     'Smelt': 0,
     'Hire': 0,
     'Fire': 0,
-    'Extract': 100
+    'Coal Extract': 20,
+    'Iron Extract': 10
 }

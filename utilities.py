@@ -50,9 +50,9 @@ def print_res():
     print "Resource // Available // (Spent This Week) // (Produced This Week)"
     print "_" * 80
     print "Steel ------ %s tons // (+%s)" % (str(mill.mill['Steel']), str(mill.orders['Forge']))
-    print "Iron Ore --- %s tons // (-%s) // (+%s)" % (str(mill.mill['Iron Ore']), str(mill.orders['Smelt']), str(mill.orders['Extract']))
+    print "Iron Ore --- %s tons // (-%s) // (+%s)" % (str(mill.mill['Iron Ore']), str(mill.orders['Smelt']), str(int(mill.workers['Miners'] * 10)))
     print "Pig Iron --- %s tons // (-%s) // (+%s)" % (str(mill.mill['Pig Iron']), str(mill.orders['Forge'] * 2), str(mill.orders['Smelt']))
-    print "Coal ------- %s tons // (-%s) // (+%s)" % (str(mill.mill['Coal']), str(mill.mill['Spent Coal']), str(int((mill.orders['Extract'] * 1.5))))
+    print "Coal ------- %s tons // (-%s) // (+%s)" % (str(mill.mill['Coal']), str(mill.mill['Spent Coal']), str(int((mill.workers['Miners'] * 20))))
 
     print "Rubles ----- %d // (-%d)" % (mill.mill['Rubles'], mill.workers['Salary'])
 

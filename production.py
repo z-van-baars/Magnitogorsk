@@ -4,6 +4,38 @@ import string
 import utilities
 
 
+def extraction():
+
+    choice = 'none'
+    utilities.clear()
+    a = mill.workers['Miners']
+    b = mill.workers['Miners'] * mill.orders['Iron Extract']
+    c = mill.workers['Miners'] * mill.orders['Coal Extract']
+    print "%d Miners extracting %d tons of Iron Ore per week, and %d tons of Coal per week." % (a, b, c)
+    print " (1) No // (2) Heavy Iron focus // (3) Moderate Iron Focus // (4) Balanced // (5) Moderate Coal Focus // (6) Heavy Coal Focus"
+    print "Change mining focus?"
+    choice = raw_input("> ")
+    if choice == "2":
+        mill.orders['Coal Extract'] = 0
+        mill.orders['Iron Extract'] = 30
+    elif choice == "3":
+        mill.orders['Coal Extract'] = 10
+        mill.orders['Iron Extract'] = 20
+    elif choice == "4":
+        mill.orders['Coal Extract'] = 15
+        mill.orders['Iron Extract'] = 15
+    elif choice == "5":
+        mill.orders['Coal Extract'] = 20
+        mill.orders['Iron Extract'] = 10
+    elif choice == "6":
+        mill.orders['Coal Extract'] = 30
+        mill.orders['Iron Extract'] = 0
+    elif choice == "1":
+        pass
+    else:
+        choice = 'none'
+
+
 # set amount of pig iron to produce
 def set_pig_iron(old_smelt):
 
@@ -11,11 +43,11 @@ def set_pig_iron(old_smelt):
     mill.mill['Spent Iron Ore'] -= (old_smelt)
     mill.mill['Iron Ore'] += (old_smelt)
     mill.mill['Coal'] += (old_smelt)
-    smelters_max = min((min(mill.mill['Iron Ore'], mill.mill['Coal'])), (mill.mill['Smelters'] * 100))
+    smelters_max = min((min(mill.mill['Iron Ore'], mill.mill['Coal'])), (mill.workers['Smelters'] * 10))
     smelt = 'none'
     utilities.clear()
     while smelt == 'none':
-        print "Smelters : %s X 100t" % mill.mill['Smelters']
+        print "Smelters : %s X 10t" % mill.workers['Smelters']
         print "1t Pig Iron consumes 1t : Iron Ore  and  1t : Coal"
         print "Smelt how much pig iron? (max : %s tons)" % smelters_max
         smelt = raw_input("> ")
@@ -42,13 +74,13 @@ def set_steel(old_forge):
     mill.mill['Spent Pig Iron'] -= (2 * old_forge)
     mill.mill['Pig Iron'] += (2 * old_forge)
     mill.mill['Coal'] += (2 * old_forge)
-    forge_max = min(min(int(mill.mill['Pig Iron'] / 2), mill.mill['Coal']), (mill.mill['Blast Furnaces'] * 100))
+    forge_max = min(min(int(mill.mill['Pig Iron'] / 2), mill.mill['Coal']), (mill.workers['Forgers'] * 10))
 
     forge = 'none'
     utilities.clear()
     while forge == 'none':
         utilities.clear()
-        print "Blast Furnaces : %s X 100t" % mill.mill['Blast Furnaces']
+        print "Forgers : %s X 10t" % mill.mill['Forgers']
         print "1t Steel consumes 2t : Pig Iron  and  2t : Coal"
         print "Forge how much Steel? (max : %s tons)" % forge_max
         forge = raw_input("> ")
@@ -76,20 +108,20 @@ def production_orders():
     set_choice = 'none'
     while set_choice == 'none':
 
-        print "%stons of Iron Ore will be produced this turn" % mill.orders['Extract']
+        print "%s tons of Iron Ore will be produced this turn" % (mill.workers['Miners'] * mill.orders['Iron Extract'])
+        print "%s tons of Coal will be produced this turn" % (mill.workers['Miners'] * mill.orders['Coal Extract'])
         print "\n"
-        print "%stons of Pig Iron will be produced this turn" % mill.orders['Smelt']
+        print "%s tons of Pig Iron will be produced this turn" % mill.orders['Smelt']
         print "\tconsuming %s tons of Iron Ore and %s tons of Coal" % (mill.orders['Smelt'], mill.orders['Smelt'])
         print "\n"
-        print "%stons of Steel will be produced this turn" % mill.orders['Forge']
+        print "%s tons of Steel will be produced this turn" % mill.orders['Forge']
         print "\tconsuming %s tons of Pig Iron and %s tons of Coal" % ((mill.orders['Forge'] * 2), mill.orders['Forge'])
         print "\nSet orders for what?"
-        print "(I)ron Ore // (P)ig Iron // (S)teel "
+        print "(I)ron and Coal Extraction // (P)ig Iron Smelting // (S)teel Forging"
         set_choice = raw_input("> ")
         set_choice = string.lower(set_choice)
         if set_choice == "i":
-            # create function to set iron ore and coal extraction
-            pass
+            extraction()
         elif set_choice == "s":
             set_steel((mill.orders['Forge']))
         elif set_choice == "p":
@@ -112,7 +144,7 @@ def print_salary():
 
     utilities.clear()
     for worker in mill.wages:
-        print "%d %s working for %d Rubles per week." % (mill.workers[worker], worker, mill.wages[worker])
+        print "%d %s working for %d Rubles per week. (%d)" % (mill.workers[worker], worker, mill.wages[worker], (mill.workers[worker] * mill.wages[worker]))
     raw_input("> ")
 
 
@@ -123,8 +155,8 @@ def production():
     mill.mill['Rubles'] -= mill.workers['Salary']
 
     # extraction
-    mill.mill['Iron Ore'] += mill.orders['Extract']
-    mill.mill['Coal'] += int(mill.orders['Extract'] * 2)
+    mill.mill['Iron Ore'] += int(mill.workers['Miners'] * mill.orders['Iron Extract'])
+    mill.mill['Coal'] += int(mill.workers['Miners'] * mill.orders['Coal Extract'])
 
     # production
 
