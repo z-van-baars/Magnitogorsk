@@ -4,12 +4,12 @@ mill = {
     'Steel': 0,
     'Pig Iron': 100,
     'Iron Ore': 100,
-    'Coal': 200,
+    'Coal': 150,
     'Blast Furnaces': 1,
     'Smelters': 1,
     'Warehouses': 1,
     'Workers': 100,
-    'Rubles': 100,
+    'Rubles': 0,
     'Spent Coal': 0,
     'Spent Iron Ore': 0,
     'Spent Pig Iron': 0
@@ -37,5 +37,5 @@ orders = {
     'Smelt': 0,
     'Hire': 0,
     'Fire': 0,
-    'Extract': 0
+    'Extract': 100
 }
