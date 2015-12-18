@@ -4,6 +4,7 @@ import mill
 import utilities
 import production
 
+
 class village(object):
 
     def __init__(self):
@@ -17,8 +18,21 @@ def build():
 # increments workers resource according to player input
 def workers():
 
-    production.print_salary()
-    pass
+    choice = 'none'
+    while choice == 'none':
+        production.print_salary()
+        print "_" * 80
+        print "Hire New Workers?"
+        choice = raw_input("> ")
+        if choice == "y":
+            pass
+        elif choice == "n":
+            pass
+        else:
+            print "Sorry Komrade, I don't understand that."
+            raw_input("")
+            choice = 'none'
+
 
 
 # iterates 4 * weekly and 12 * monthly

@@ -11,26 +11,29 @@ def extraction():
     a = mill.workers['Miners']
     b = mill.workers['Miners'] * mill.orders['Iron Extract']
     c = mill.workers['Miners'] * mill.orders['Coal Extract']
+    print "Current focus:"
+    print "_" * 80
     print "%d Miners extracting %d tons of Iron Ore per week, and %d tons of Coal per week." % (a, b, c)
-    print " (1) No // (2) Heavy Iron focus // (3) Moderate Iron Focus // (4) Balanced // (5) Moderate Coal Focus // (6) Heavy Coal Focus"
-    print "Change mining focus?"
+    print "\n" * 4
+    print "(1) Heavy Iron focus / (2) Moderate Iron Focus / (3) Balanced / (4) Moderate Coal Focus / (5) Heavy Coal Focus"
+    print "Change mining focus (6 for No)?"
     choice = raw_input("> ")
-    if choice == "2":
+    if choice == "1":
         mill.orders['Coal Extract'] = 0
         mill.orders['Iron Extract'] = 30
-    elif choice == "3":
+    elif choice == "2":
         mill.orders['Coal Extract'] = 10
         mill.orders['Iron Extract'] = 20
-    elif choice == "4":
+    elif choice == "3":
         mill.orders['Coal Extract'] = 15
         mill.orders['Iron Extract'] = 15
-    elif choice == "5":
+    elif choice == "4":
         mill.orders['Coal Extract'] = 20
         mill.orders['Iron Extract'] = 10
-    elif choice == "6":
+    elif choice == "5":
         mill.orders['Coal Extract'] = 30
         mill.orders['Iron Extract'] = 0
-    elif choice == "1":
+    elif choice == "6":
         pass
     else:
         choice = 'none'
@@ -80,7 +83,7 @@ def set_steel(old_forge):
     utilities.clear()
     while forge == 'none':
         utilities.clear()
-        print "Forgers : %s X 10t" % mill.mill['Forgers']
+        print "Forgers : %s X 10t" % mill.workers['Forgers']
         print "1t Steel consumes 2t : Pig Iron  and  2t : Coal"
         print "Forge how much Steel? (max : %s tons)" % forge_max
         forge = raw_input("> ")
