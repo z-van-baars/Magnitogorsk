@@ -1,37 +1,5 @@
 import random
-
-mill = {
-    'Steel': 0,
-    'Pig Iron': 0,
-    'Iron Ore': 0,
-    'Coal': 0,
-    'Blast Furnaces': 1,
-    'Smelters': 1,
-    'Warehouses': 1,
-    'Workers': 100,
-    'Rubles': 100
-}
-
-months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-]
-
-month = months[0]
-
-year = 1920
-
-game_over = False
+import mill
 
 
 class village(object):
@@ -45,13 +13,13 @@ def clear():
 
 
 def print_res():
-    clear()
-    print "Steel: %s" % mill['Steel']
-    print "Iron Ore: %s" % mill['Iron Ore']
-    print "Pig Iron: %s" % mill['Pig Iron']
-    print "Coal: %s" % mill['Coal']
-    print "Rubles: %s" % mill['Rubles']
-    raw_input("> ")
+
+    print "Steel ------ %s tons - (+%s)" % (str(mill.mill['Steel']), str(mill.orders['Forge']))
+    print "Iron Ore --- %s tons - (+%s)" % (str(mill.mill['Iron Ore']), str(mill.orders['Extract']))
+    print "Pig Iron --- %s tons - (+%s)" % (str(mill.mill['Pig Iron']), str(mill.orders['Smelt']))
+    print "Coal ------- %s tons - (-%s, +%s)" % (str(mill.mill['Coal']), str(mill.mill['Spent Coal']), str(mill.orders['Extract']))
+
+    print "Rubles: %s" % mill.mill['Rubles']
 
 
 # calculates the goal for steel and other conditionals for the monthly turn
@@ -62,10 +30,10 @@ def demand():
 # checks production against goal conditions
 def production_check():
 
-    if mill['Steel'] >= turn_demand:
-        mill['Steel'] -= turn_demand
+    if mill.mill['Steel'] >= mill.mill['Demand']:
+        mill.mill['Steel'] -= mill.mill['Demand']
         print "You live to toil another day!"
-        raw_input("The glorious government takes %s tons of your proud Sovistani Steel" % str(turn_demand))
+        raw_input("The glorious government takes %s tons of your proud Sovistani Steel" % str(mill.mill['Demand']))
         print_res()
         return False
     else:
@@ -74,78 +42,79 @@ def production_check():
         raw_input("")
         print "Long Live SOVIET SOVISTAN!"
         raw_input("")
-        return True
 
 
 # set amount of pig iron to produce
-def set_pig_iron():
+def set_pig_iron(old_smelt):
 
-    if mill['Iron Ore'] >= mill['Coal']:
-        pig_iron_max = (mill['Iron Ore'] - (mill['Iron Ore'] - mill['Coal']))
-    else:
-        pig_iron_max = (mill['Coal'] - (mill['Coal'] - mill['Iron Ore']))
-
-        smelters_max = mill['Smelters'] * 100
-
-        if pig_iron_max >= smelters_max:
-            pig_iron_max -= (pig_iron_max - smelters_max)
+    mill.mill['Spent Coal'] -= (old_smelt)
+    mill.mill['Spent Iron Ore'] -= (old_smelt)
+    mill.mill['Iron Ore'] += (old_smelt)
+    mill.mill['Coal'] += (old_smelt)
+    smelters_max = min((min(mill.mill['Iron Ore'], mill.mill['Coal'])), (mill.mill['Smelters'] * 100))
+    smelt = 'none'
+    clear()
+    while smelt == 'none':
+        print "Smelters : %s X 100t" % mill.mill['Smelters']
+        print "1t Pig Iron consumes 1t : Iron Ore  and  1t : Coal"
+        print "Smelt how much pig iron? (max : %stons)" % smelters_max
+        smelt = raw_input("> ")
+        if smelt > smelters_max or smelt < 0:
+            print "Komrade, we cannot produce at that capacity!"
+            smelt = 'none'
         else:
-            pig_iron_max -= (smelters_max - pig_iron_max)
-        smelt = 'none'
-
-        while smelt == 'none':
-            print "Smelters : %s X 100t" % mill['Smelters']
-            print "1t Pig Iron consumes 1t : Iron Ore  and  1t : Coal"
-            print "Smelt how much pig iron? (max : %stons)" % pig_iron_max
-            smelt = raw_input("> ")
-            if smelt > smelters_max or smelt < 0:
-                print "Komrade, we cannot produce at that capacity!"
-            else:
-                print "Very good Komrade, the smelters will produce %stons of Pig Iron this week!"
+            print "Very good Komrade, the smelters will produce %stons of Pig Iron this week!" % smelt
+        raw_input("> ")
+    mill.mill['Spent Coal'] += (smelt)
+    mill.mill['Spent Iron Ore'] += (smelt)
+    mill.mill['Iron Ore'] += (smelt)
+    mill.mill['Coal'] += (smelt)
     return smelt
 
-def set_steel():
-    if mill['Pig Iron'] >= mill['Coal']:
-        forge_max = (mill['Pig Iron'] - (mill['Pig Iron'] - mill['Coal']))
-    else:
-        forge_max = (mill['Coal'] - (mill['Coal'] - mill['Pig Iron']))
 
-        forge_max = mill['Blast Furnaces'] * 100
+def set_steel(old_forge):
 
-        if steel_max >= forge_max:
-            steel_max -= (steel_max - forge_max)
+    mill.mill['Spent Coal'] -= (old_forge)
+    mill.mill['Spent Pig Iron'] -= (old_forge)
+    mill.mill['Pig Iron'] += (old_forge)
+    mill.mill['Coal'] += (2 * old_forge)
+    forge_max = min(min(mill.mill['Pig Iron'], int(mill.mill['Coal'] / 2)), (mill.mill['Blast Furnaces'] * 100))
+
+    forge = 'none'
+    clear()
+    while forge == 'none':
+        clear()
+        print "Blast Furnaces : %s X 100t" % mill.mill['Blast Furnaces']
+        print "1t Steel consumes 2t : Pig Iron  and  1t : Coal"
+        print "Forge how much Steel? (max : %stons)" % forge_max
+        forge = raw_input("> ")
+        if forge > forge_max or forge < 0:
+            print "Komrade, we cannot produce at that capacity!"
+            forge = 'none'
         else:
-            steel_max -= (forge_max - steel_max)
-        forge = 'none'
-
-        while forge == 'none':
-            print "Blast Furnaces : %s X 100t" % mill['Blast Furnaces']
-            print "1t Steel consumes 2t : Pig Iron  and  1t : Coal"
-            print "Forge how much Steel? (max : %stons)" % steel_max
-            forge = raw_input("> ")
-            if forge > furnaces_max or forge < 0:
-                print "Komrade, we cannot produce at that capacity!"
-            else:
-                print "Very good Komrade, the smelters will produce %stons of Pig Iron this week!"
+            print "Very good Komrade, the smelters will produce %stons of Pig Iron this week!" % forge
+        raw_input("> ")
+    mill.mill['Spent Coal'] += (forge)
+    mill.mill['Spent Pig Iron'] += (forge)
+    mill.mill['Pig Iron'] += (forge)
+    mill.mill['Coal'] += (2 * forge)
     return forge
 
+
 # parses player input into game actions
+
+
 def action_choice():
     pass
 
 
-# alters production parameters for the mill every turn according player input
+# calculates resources consumed and produced every turn
+
 def production():
-    ## extraction
-    mill['Iron Ore'] += 100
-    mill['Coal'] += 100
+    pass
+    # extraction
 
-    ## production
-    steel = mill['Blast Furnaces'] * mill['Pig Iron']
-    mill['Pig Iron'] -= steel
-    mill['Steel'] += steel
-    print_res()
-
+    # production
 
 
 # increments workers resource according to player input
@@ -154,55 +123,55 @@ def workers():
     pass
 
 
-# calculates amount of resources consumed and produced per week
+# allows player to assign production
 def production_orders():
-    clear()
-    while set_choice == 'none':
-        print "Set orders for what?"
 
+    clear()
+    set_choice = 'none'
+    while set_choice == 'none':
+
+        print "%stons of Iron Ore will be produced this turn" % mill.orders['Extract']
+        print "\n"
+        print "%stons of Pig Iron will be produced this turn" % mill.orders['Smelt']
+        print "\tconsuming %s tons of Iron Ore and %s tons of Coal" % (mill.orders['Smelt'], mill.orders['Smelt'])
+        print "\n"
+        print "%stons of Steel will be produced this turn" % mill.orders['Forge']
+        print "\tconsuming %s tons of Pig Iron and %s tons of Coal" % (mill.orders['Forge'], (mill.orders['Forge'] * 2))
+        print "\nSet orders for what?"
         print "(I)ron Ore // (P)ig Iron // (S)teel "
         set_choice = raw_input("> ")
         if set_choice == "I":
             # create function to set iron ore and coal extraction
             pass
         elif set_choice == "S":
-            forge = set_steel()
+            mill.orders['Forge'] = set_steel((mill.orders['Forge']))
         elif set_choice == "P":
-            smelt = set_pig_iron()
+            mill.orders['Smelt'] = set_pig_iron((mill.orders['Smelt']))
         else:
             print "Sorry Komrade, I don't understand that."
-            set_choice == 'none'
+            raw_input("> ")
+            set_choice = 'none'
+            clear()
 
         # Need function to make sure production orders don't have resource draw conflicts
 
 
-
-
-print "MAGNITOGORSk!"
-print "_" * 20
-
-# game loop - iterates 4 * weekly and 12 * monthly with a weekly, monthly, and yearly incrementer
-# calls subfunctions to do production and other game tasks
-
-while game_over == False:
-    clear()
-    print "ENTER GLORIOUS COMMUNIST YEAR: %s!" % str(year)
-    print "\n" * 4
-    raw_input("> ")
-    clear()
+def month_loop():
     month = 0
-    while month < 11 and game_over == False:
+    while month < 11:
 
-        turn_demand = demand()
+        mill.mill['Demand'] = demand()
 
-        print "The great leader commands you produce %d tons of Steel this month!" % turn_demand
+        print "The great leader commands you produce %s tons of Steel this month!" % str(mill.mill['Demand'])
         raw_input("> ")
+
         for w in range(4):
             action = 'none'
             while action == 'none':
                 clear()
-                print months[month] + " : " + str(year)
+                print mill.months[month] + " : " + str(mill.mill['Year'])
                 print "Week: %s" % str(w + 1)
+                print "\n" * 4
                 print_res()
                 print "_" * 80
                 print "(B)uild // (H)ire and Fire workers // Buy and Sell (R)esources // (S)et production"
@@ -212,7 +181,7 @@ while game_over == False:
                 elif action == "H":
                     pass
                 elif action == "S":
-                    production()
+                    production_orders()
                 elif action == "B":
                     pass
                 elif action == "E":
@@ -221,4 +190,23 @@ while game_over == False:
         raw_input("> ")
         game_over = production_check()
         month += 1
-    year += 1
+
+
+# game loop - iterates 4 * weekly and 12 * monthly with a weekly, monthly, and yearly incrementer
+# calls subfunctions to do production and other game tasks
+def game_loop():
+    game_over = False
+    while game_over == False:
+        clear()
+        print "ENTER GLORIOUS COMMUNIST YEAR: %s!" % str(mill.mill['Year'])
+        print "\n" * 4
+        raw_input("> ")
+        clear()
+        month_loop()
+        mill.mill['Year'] += 1
+
+print "MAGNITOGORSk!"
+print "_" * 20
+
+game_loop()
+
