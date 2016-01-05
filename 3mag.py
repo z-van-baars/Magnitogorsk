@@ -1,9 +1,6 @@
 import pygame
 import random
-import string
-import mill
-import utilities
-import production
+
 
 pygame.init()
 done = False
@@ -29,16 +26,15 @@ pygame.display.set_caption("magnitogorsk")
 
 main_menu_music = pygame.mixer.Sound("sound/USSR_anthem.ogg")
 
-
-
 menu_font = pygame.font.SysFont('Calibri', 30, True, False)
 
-quit_text = menu_font.render("Quit Game", True, white)
-new_text = menu_font.render("New Game", True, green)
+
 
 
 def main_menu():
 
+    quit_text = menu_font.render("Quit Game", True, white)
+    new_text = menu_font.render("New Game", True, green)
     menu_item = new_text
     menu_up = True
     while menu_up:
