@@ -5,16 +5,6 @@ import utilities
 import production
 
 
-class village(object):
-
-    def __init__(self):
-        pass
-
-
-def build():
-    pass
-
-
 # increments workers resource according to player input
 def workers():
 

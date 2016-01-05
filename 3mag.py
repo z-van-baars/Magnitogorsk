@@ -1,5 +1,9 @@
 import pygame
 import random
+import string
+import mill
+import utilities
+import production
 
 pygame.init()
 done = False
@@ -8,7 +12,7 @@ clock = pygame.time.Clock()
 
 black = (0, 0, 0)
 white = (255, 255, 255)
-green = (0, 255, 0)
+green = (25, 255, 50)
 red = (255, 0, 0)
 blue = (0, 0, 255)
 
@@ -25,21 +29,18 @@ pygame.display.set_caption("magnitogorsk")
 
 main_menu_music = pygame.mixer.Sound("sound/USSR_anthem.ogg")
 
-menu_up = True
+
 
 menu_font = pygame.font.SysFont('Calibri', 30, True, False)
 
 quit_text = menu_font.render("Quit Game", True, white)
 new_text = menu_font.render("New Game", True, green)
 
-menu_item = new_text
 
-while not done:
+def main_menu():
 
-    for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                done = True
-
+    menu_item = new_text
+    menu_up = True
     while menu_up:
 
         for event in pygame.event.get():
@@ -65,9 +66,6 @@ while not done:
                     elif menu_item == new_text:
                         menu_up = False
 
-
-
-
         screen.blit(menu_bg, [0, 0])
 
         screen.blit(new_text, [50, 500])
@@ -76,6 +74,15 @@ while not done:
 
         pygame.display.flip()
         clock.tick(60)
+    return menu_item
+
+while not done:
+
+    for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                done = True
+
+    main_menu()
 
 
 
