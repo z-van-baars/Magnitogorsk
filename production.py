@@ -112,16 +112,16 @@ def production_orders():
     set_choice = 'none'
     while set_choice == 'none':
 
-        print "%s tons of Iron Ore will be produced this turn" % (mill.workers['Miners'] * mill.orders['Iron Extract'])
-        print "%s tons of Coal will be produced this turn" % (mill.workers['Miners'] * mill.orders['Coal Extract'])
-        print "\n"
-        print "%s tons of Pig Iron will be produced this turn" % mill.orders['Smelt']
-        print "\tconsuming %s tons of Iron Ore and %s tons of Coal" % (mill.orders['Smelt'], mill.orders['Smelt'])
-        print "\n"
-        print "%s tons of Steel will be produced this turn" % mill.orders['Forge']
-        print "\tconsuming %s tons of Pig Iron and %s tons of Coal" % ((mill.orders['Forge'] * 2), mill.orders['Forge'])
-        print "\nSet orders for what?"
-        print "(I)ron and Coal Extraction // (P)ig Iron Smelting // (S)teel Forging"
+        print("%s tons of Iron Ore will be produced this turn" % (mill.workers['Miners'] * mill.orders['Iron Extract']))
+        print("%s tons of Coal will be produced this turn" % (mill.workers['Miners'] * mill.orders['Coal Extract']))
+        print("\n")
+        print("%s tons of Pig Iron will be produced this turn" % mill.orders['Smelt'])
+        print("\tconsuming %s tons of Iron Ore and %s tons of Coal" % (mill.orders['Smelt'], mill.orders['Smelt']))
+        print("\n")
+        print("%s tons of Steel will be produced this turn" % mill.orders['Forge'])
+        print("\tconsuming %s tons of Pig Iron and %s tons of Coal" % ((mill.orders['Forge'] * 2), mill.orders['Forge']))
+        print("\nSet orders for what?"
+        print("(I)ron and Coal Extraction // (P)ig Iron Smelting // (S)teel Forging")
         set_choice = raw_input("> ")
         set_choice = string.lower(set_choice)
         if set_choice == "i":
@@ -137,11 +137,7 @@ def production_orders():
             utilities.clear()
 
 
-def salary():
 
-    mill.workers['Salary'] = 0
-    for worker in mill.wages:
-        mill.workers['Salary'] += mill.workers[worker] * mill.wages[worker]
 
 
 def print_salary():

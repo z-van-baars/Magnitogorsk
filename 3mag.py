@@ -14,9 +14,9 @@ pygame.display.set_caption("magnitogorsk")
 
 def main_menu():
 
-    quit_text_g = assets.menu_font.render("Quit Game", True, assets.green)
+    quit_text_g = assets.menu_font.render("Quit Game", True, assets.gold)
     quit_text_w = assets.menu_font.render("Quit Game", True, assets.white)
-    new_text_g = assets.menu_font.render("New Game", True, assets.green)
+    new_text_g = assets.menu_font.render("New Game", True, assets.gold)
     new_text_w = assets.menu_font.render("New Game", True, assets.white)
 
     new_text = new_text_g
@@ -42,7 +42,7 @@ def main_menu():
                 if event.key == pygame.K_RIGHT:
                     if menu_item != "Quit":
                         menu_item = "Quit"
-                        mill.mill['Defunct'] = 1
+                        mill.mill['Defunct'] = 2
                         quit_text = quit_text_g
                         new_text = new_text_w
 
@@ -56,7 +56,7 @@ def main_menu():
         # assets.main_menu_music.play()
 
         pygame.display.flip()
-        assets.clock.tick(60)
+        assets.clock.tick(20)
 
     return menu_item
 
@@ -67,24 +67,28 @@ def month_loop():
 
         mill.mill['Demand'] = utilities.demand()
 
-        print("The great leader commands you produce %s tons of Steel this month!" % str(mill.mill['Demand']))
+        utilities.demand_splash(mill.mill['Demand'])
 
-        for w in range(4):
+        week = 1
+
+        while week < 5:
             turn_over = False
             while not turn_over:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         action = "Quit"
-                        mill.mill['Defunct'] = 1
+                        mill.mill['Defunct'] = 2
 
-                pointer_locs = [[25, 550], [147, 550], [315, 550], [475, 550], [655, 550]]
+                pointer_locs = [[25, 550], [147, 550], [315, 550], [475, 550], [655, 550], [655, 450]]
                 pointer_pos = 0
                 action = 'none'
                 while action == 'none':
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             action = "Quit"
-                            mill.mill['Defunct'] = 1
+                            mill.mill['Defunct'] = 2
+                            week += 5
+                            turn_over = True
 
                         if event.type == pygame.KEYDOWN:
 
@@ -101,15 +105,15 @@ def month_loop():
 
                     print(pointer_pos)
                     month_stamp = assets.year_font.render(str(mill.months[month]), True, assets.gray)
-                    demand_stamp = assets.year_font.render(str(mill.mill['Demand']), True, assets.gray)
+                    quota_stamp = assets.year_font.render(str(mill.mill['Demand']), True, assets.gray)
                     year_stamp = assets.year_font.render(str(mill.mill['Year']), True, assets.gray)
                     assets.screen.blit(assets.factory_bg, [0, 0])
                     assets.screen.blit(month_stamp, [10, 8])
                     assets.screen.blit(year_stamp, [252, 8])
-                    assets.screen.blit(demand_stamp, [700, 8])
+                    assets.screen.blit(quota_stamp, [700, 8])
                     assets.screen.blit(assets.pointer, pointer_locs[pointer_pos])
                     pygame.display.flip()
-                    assets.clock.tick(60)
+                    assets.clock.tick(20)
 
                 if action == 0:
                     print("BUILD")
@@ -119,6 +123,8 @@ def month_loop():
                     # personnel
                 if action == 2:
                     print("RESOURCES")
+                    utilities.salary()
+                    utilities.print_res()
                     # resources
                 if action == 3:
                     print("PRODUCTION")
@@ -128,6 +134,10 @@ def month_loop():
                     print("END TURN")
                     turn_over = True
                     # end turn
+                if action == 5:
+                    print("QUIT")
+                    turn_over = True
+                    week += 5
 
                 
                 # print("Week: %s" % str(w + 1))
@@ -151,6 +161,7 @@ def month_loop():
                 #     pass
             # production.production()
             # utilities.turn_timer()
+            week += 1
         # utilities.production_check()
         month += 1
 
@@ -164,15 +175,23 @@ def game_loop():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 menu_item = "Quit"
+        year_disp = True
+        while year_disp:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        year_disp = False
 
-        for i in range(200):
             assets.screen.blit(assets.year_splash, [0, 0])
             assets.screen.blit(year_stamp, [425, 150])
             pygame.display.flip()
-            assets.clock.tick(60)
+            assets.clock.tick(20)
 
         month_loop()
         mill.mill['Year'] += 1
+
+    if mill.mill['Defunct'] == 1:
+        utilities.lose()
 
 
 

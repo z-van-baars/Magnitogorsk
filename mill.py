@@ -17,7 +17,7 @@ mill = {
 }
 
 workers = {
-    'Salary'
+    'Salary': 0,
     'Untrained': 0,
     'Smelters': 10,
     'Forgers': 10,
