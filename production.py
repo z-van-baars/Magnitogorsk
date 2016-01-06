@@ -12,12 +12,12 @@ def extraction():
     a = mill.workers['Miners']
     b = mill.workers['Miners'] * mill.orders['Iron Extract']
     c = mill.workers['Miners'] * mill.orders['Coal Extract']
-    print "Current focus:"
-    print "_" * 80
-    print "%d Miners extracting %d tons of Iron Ore per week, and %d tons of Coal per week." % (a, b, c)
-    print "\n" * 4
-    print "(1) Heavy Iron focus / (2) Moderate Iron Focus / (3) Balanced / (4) Moderate Coal Focus / (5) Heavy Coal Focus"
-    print "Change mining focus (6 for No)?"
+    print("Current focus:")
+    print("_" * 80)
+    print("%d Miners extracting %d tons of Iron Ore per week, and %d tons of Coal per week." % (a, b, c))
+    print("\n" * 4)
+    print("(1) Heavy Iron focus / (2) Moderate Iron Focus / (3) Balanced / (4) Moderate Coal Focus / (5) Heavy Coal Focus")
+    print("Change mining focus (6 for No)?")
     choice = raw_input("> ")
     if choice == "1":
         mill.orders['Coal Extract'] = 0
@@ -51,19 +51,19 @@ def set_pig_iron(old_smelt):
     smelt = 'none'
     utilities.clear()
     while smelt == 'none':
-        print "Smelters : %s X 10t" % mill.workers['Smelters']
-        print "1t Pig Iron consumes 1t : Iron Ore  and  1t : Coal"
-        print "Smelt how much pig iron? (max : %s tons)" % smelters_max
+        print("Smelters : %s X 10t" % mill.workers['Smelters'])
+        print("1t Pig Iron consumes 1t : Iron Ore  and  1t : Coal")
+        print("Smelt how much pig iron? (max : %s tons)" % smelters_max)
         smelt = raw_input("> ")
         try:
             smelt = int(smelt)
         except ValueError:
             smelt = (smelters_max + 1)
         if smelt > smelters_max or smelt < 0:
-            print "Komrade, we cannot produce at that capacity!"
+            print("Komrade, we cannot produce at that capacity!")
             smelt = 'none'
         else:
-            print "Very good Komrade, the smelters will produce %s tons of Pig Iron this week!" % smelt
+            print("Very good Komrade, the smelters will produce %s tons of Pig Iron this week!" % smelt)
             mill.orders['Smelt'] = smelt
         raw_input("> ")
     mill.mill['Spent Coal'] += (mill.orders['Smelt'])
@@ -84,19 +84,19 @@ def set_steel(old_forge):
     utilities.clear()
     while forge == 'none':
         utilities.clear()
-        print "Forgers : %s X 10t" % mill.workers['Forgers']
-        print "1t Steel consumes 2t : Pig Iron  and  2t : Coal"
-        print "Forge how much Steel? (max : %s tons)" % forge_max
+        print("Forgers : %s X 10t" % mill.workers['Forgers'])
+        print("1t Steel consumes 2t : Pig Iron  and  2t : Coal")
+        print("Forge how much Steel? (max : %s tons)" % forge_max)
         forge = raw_input("> ")
         try:
             forge = int(forge)
         except ValueError:
             forge = (forge_max + 1)
         if forge > forge_max or forge < 0:
-            print "Komrade, we cannot produce at that capacity!"
+            print("Komrade, we cannot produce at that capacity!")
             forge = 'none'
         elif forge <= forge_max and forge >= 0:
-            print "Very good Komrade, the Furnaces will produce %s tons of Steel this week!" % forge
+            print("Very good Komrade, the Furnaces will produce %s tons of Steel this week!" % forge)
             mill.orders['Forge'] = forge
         raw_input("> ")
     mill.mill['Spent Coal'] += (2 * mill.orders['Forge'])
@@ -120,7 +120,7 @@ def production_orders():
         print("\n")
         print("%s tons of Steel will be produced this turn" % mill.orders['Forge'])
         print("\tconsuming %s tons of Pig Iron and %s tons of Coal" % ((mill.orders['Forge'] * 2), mill.orders['Forge']))
-        print("\nSet orders for what?"
+        print("\nSet orders for what?")
         print("(I)ron and Coal Extraction // (P)ig Iron Smelting // (S)teel Forging")
         set_choice = raw_input("> ")
         set_choice = string.lower(set_choice)
@@ -131,7 +131,7 @@ def production_orders():
         elif set_choice == "p":
             set_pig_iron((mill.orders['Smelt']))
         else:
-            print "Sorry Komrade, I don't understand that."
+            print("Sorry Komrade, I don't understand that.")
             raw_input("> ")
             set_choice = 'none'
             utilities.clear()
@@ -144,7 +144,7 @@ def print_salary():
 
     utilities.clear()
     for worker in mill.wages:
-        print "%d %s working for %d Rubles per week. (%d)" % (mill.workers[worker], worker, mill.wages[worker], (mill.workers[worker] * mill.wages[worker]))
+        print("%d %s working for %d Rubles per week. (%d)" % (mill.workers[worker], worker, mill.wages[worker], (mill.workers[worker] * mill.wages[worker])))
     raw_input("> ")
 
 
@@ -167,8 +167,5 @@ def production():
     mill.orders['Forge'] = 0
     mill.mill['Pig Iron'] += mill.orders['Smelt']
     mill.orders['Smelt'] = 0
-
     if mill.mill['Rubles'] < 0:
         mill.mill['Defunct'] = 1
-    else:
-        pass

@@ -21,6 +21,7 @@ def demand_splash(demand):
                 mill.mill['Defunct'] = 2
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
+                    assets.click_01.play()
                     demand_disp = False
 
         assets.screen.blit(assets.demand_splash, [0, 0])
@@ -61,7 +62,7 @@ def print_res():
         assets.screen.blit(assets.resource_screen, [0, 0])
 
         # current
-        assets.screen.blit(current_steel_stamp, [195, 95])
+        assets.screen.blit(current_rubles_stamp, [195, 95])
         assets.screen.blit(current_coal_stamp, [195, 160])
         assets.screen.blit(current_iron_ore_stamp, [195, 250])
         assets.screen.blit(current_pig_iron_stamp, [195, 330])

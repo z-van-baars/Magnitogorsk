@@ -5,6 +5,7 @@ pygame.init()
 clock = pygame.time.Clock()
 
 main_menu_music = pygame.mixer.Sound("sound/USSR_anthem.ogg")
+click_01 = pygame.mixer.Sound("sound/click_01.wav")
 
 menu_font = pygame.font.SysFont('Calibri', 30, True, False)
 year_font = pygame.font.SysFont('Calibri', 40, True, False)

@@ -3,8 +3,10 @@ import random
 import assets
 import mill
 import utilities
+import production
 
-
+pygame.mixer.pre_init(44100, -16, 2, 2048)
+pygame.mixer.init()
 pygame.init()
 done = False
 
@@ -14,6 +16,7 @@ pygame.display.set_caption("magnitogorsk")
 
 def main_menu():
 
+    # assets.main_menu_music.play()
     quit_text_g = assets.menu_font.render("Quit Game", True, assets.gold)
     quit_text_w = assets.menu_font.render("Quit Game", True, assets.white)
     new_text_g = assets.menu_font.render("New Game", True, assets.gold)
@@ -48,17 +51,35 @@ def main_menu():
 
                 if event.key == pygame.K_RETURN:
                     menu_up = False
+                    assets.click_01.play()
 
         assets.screen.blit(assets.menu_bg, [0, 0])
 
         assets.screen.blit(new_text, [100, 500])
         assets.screen.blit(quit_text, [500, 500])
-        # assets.main_menu_music.play()
 
         pygame.display.flip()
         assets.clock.tick(20)
 
     return menu_item
+
+
+def workers():
+
+    choice = 'none'
+    while choice == 'none':
+        production.print_salary()
+        print("_" * 80)
+        print("Hire New Workers?")
+        choice = input("> ")
+        if choice == "y":
+            pass
+        elif choice == "n":
+            pass
+        else:
+            print("Sorry Komrade, I don't understand that.")
+            input("")
+            choice = 'none'
 
 
 def month_loop():
@@ -73,15 +94,17 @@ def month_loop():
 
         while week < 5:
             turn_over = False
+
+            pointer_pos = 0
+            pointer_locs = [[25, 550], [147, 550], [315, 550], [475, 550], [655, 550], [655, 450]]
+
             while not turn_over:
+                action = 'none'
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         action = "Quit"
                         mill.mill['Defunct'] = 2
 
-                pointer_locs = [[25, 550], [147, 550], [315, 550], [475, 550], [655, 550], [655, 450]]
-                pointer_pos = 0
-                action = 'none'
                 while action == 'none':
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
@@ -92,6 +115,10 @@ def month_loop():
 
                         if event.type == pygame.KEYDOWN:
 
+                            if event.key == pygame.K_UP and pointer_pos == 4:
+                                pointer_pos = 5
+                            if event.key == pygame.K_DOWN and pointer_pos == 5:
+                                pointer_pos = 4
                             if event.key == pygame.K_LEFT:
                                 pointer_pos -= 1
                                 if pointer_pos < 0:
@@ -102,6 +129,7 @@ def month_loop():
                                     pointer_pos = 4
                             if event.key == pygame.K_RETURN:
                                 action = pointer_pos
+                                assets.click_01.play()
 
                     print(pointer_pos)
                     month_stamp = assets.year_font.render(str(mill.months[month]), True, assets.gray)
@@ -133,11 +161,13 @@ def month_loop():
                 if action == 4:
                     print("END TURN")
                     turn_over = True
+                    production.production()
                     # end turn
                 if action == 5:
                     print("QUIT")
                     turn_over = True
                     week += 5
+                    mill.mill['Defunct'] = 2
 
                 
                 # print("Week: %s" % str(w + 1))
@@ -180,6 +210,7 @@ def game_loop():
             for event in pygame.event.get():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
+                        assets.click_01.play()
                         year_disp = False
 
             assets.screen.blit(assets.year_splash, [0, 0])
@@ -192,11 +223,6 @@ def game_loop():
 
     if mill.mill['Defunct'] == 1:
         utilities.lose()
-
-
-
-        # mill.mill['Year'] += 1
-
 
 
 while not done:
