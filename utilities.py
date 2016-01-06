@@ -1,8 +1,64 @@
+import assets
 import random
 import mill
 import time
 
 
+def demand():
+    demand1 = random.randint(20, 45)
+    demand2 = random.randint(20, 45)
+    print(mill.mill['Demand'] / 10)
+    return ((max(demand1, demand2) * 4) + (mill.mill['Demand'] / 10))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Old Stuff ###
 def clear():
     print("\n" * 50)
 
@@ -22,11 +78,7 @@ def lose():
 
 
 # calculates the goal for steel and other conditionals for the monthly turn
-def demand():
-    demand1 = random.randint(20, 45)
-    demand2 = random.randint(20, 45)
-    print(mill.mill['Demand'] / 10)
-    return ((max(demand1, demand2) * 4) + (mill.mill['Demand'] / 10))
+
 
 
 # checks production against goal conditions

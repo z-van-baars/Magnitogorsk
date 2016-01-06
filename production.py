@@ -1,3 +1,4 @@
+import assets
 import mill
 import random
 import string
