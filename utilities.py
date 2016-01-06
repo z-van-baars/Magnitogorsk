@@ -34,6 +34,43 @@ def demand_splash(demand):
 
 def print_res():
 
+    res_xpos = {
+        'Rubles': 95,
+        'Steel': 500,
+        'Coal': 160,
+        'Iron Ore': 250,
+        'Pig Iron': 330,
+    }
+
+    current_stamp = {}
+    alloc_stamp = {}
+    prod_stamp = {}
+
+    for res_kind in res_xpos:
+        current_stamp[res_kind] = menu_font.render(str(mill.workers[stat_kind]), True, assets.black)
+        wage_stamp[res_kind] = menu_font.render(str(mill.wages[stat_kind]), True, assets.black)
+        total_stamp[res_kind] = menu_font.render(str(mill.workers[stat_kind] * mill.wages[stat_kind]), True, assets.black)
+
+    total_wages_stamp = menu_font.render(str(mill.workers['Salary']), True, assets.gold)
+
+    while disp_wages:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    disp_wages = False
+        assets.screen.blit(assets.wages_bg, [0, 0])
+
+        for stat_kind in stat_xpos:
+            assets.screen.blit(num_stamp[stat_kind], [195, stat_xpos[stat_kind]])
+            assets.screen.blit(wage_stamp[stat_kind], [375, stat_xpos[stat_kind]])
+            assets.screen.blit(total_stamp[stat_kind], [630, stat_xpos[stat_kind]])
+
+
+
+        pygame.display.flip()
+        assets.clock.tick(20)
+
+ # old code
     current_steel_stamp = assets.menu_font.render(str(mill.mill['Steel']), True, assets.black)
     current_iron_ore_stamp = assets.menu_font.render(str(mill.mill['Iron Ore']), True, assets.black)
     current_coal_stamp = assets.menu_font.render(str(mill.mill['Coal']), True, assets.black)
@@ -88,16 +125,62 @@ def print_res():
 
 def lose():
 
-    for i in range(200):
+    for i in range(100):
 
         assets.screen.blit(assets.lose_splash, [0, 0])
         pygame.display.flip()
-        assets.clock.tick(60)
+        assets.clock.tick(20)
+
 
 # for debugging
 def show_mouse():
     pos = pygame.mouse.get_mouse()
     print(pos)
+
+
+def print_salary():
+
+    from assets import menu_font
+
+    disp_wages = True
+    salary()
+
+    stat_xpos = {
+        'Untrained': 95,
+        'Clerks': 175,
+        'Miners': 250,
+        'Smelters': 330,
+        'Forgers': 420,
+    }
+
+    num_stamp = {}
+    wage_stamp = {}
+    total_stamp = {}
+
+    for stat_kind in stat_xpos:
+        num_stamp[stat_kind] = menu_font.render(str(mill.workers[stat_kind]), True, assets.black)
+        wage_stamp[stat_kind] = menu_font.render(str(mill.wages[stat_kind]), True, assets.black)
+        total_stamp[stat_kind] = menu_font.render(str(mill.workers[stat_kind] * mill.wages[stat_kind]), True, assets.black)
+
+    total_wages_stamp = menu_font.render(str(mill.workers['Salary']), True, assets.gold)
+
+    while disp_wages:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    disp_wages = False
+        assets.screen.blit(assets.wages_bg, [0, 0])
+
+        for stat_kind in stat_xpos:
+            assets.screen.blit(num_stamp[stat_kind], [195, stat_xpos[stat_kind]])
+            assets.screen.blit(wage_stamp[stat_kind], [375, stat_xpos[stat_kind]])
+            assets.screen.blit(total_stamp[stat_kind], [630, stat_xpos[stat_kind]])
+
+        # total wages
+        assets.screen.blit(total_wages_stamp, [654, 510])
+
+        pygame.display.flip()
+        assets.clock.tick(20)
 
 
 def salary():

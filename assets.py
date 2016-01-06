@@ -34,6 +34,7 @@ pipes_bg = pygame.image.load("art/pipes.png").convert()
 workers_bg = pygame.image.load("art/workers_bg.png").convert()
 lose_splash = pygame.image.load("art/lose_splash.png").convert()
 lavatrain = pygame.image.load("art/lavatrain.png").convert()
+wages_bg = pygame.image.load("art/wages.png").convert()
 pointer = pygame.image.load("art/pointer.png").convert()
 
 pointer.set_colorkey(key)

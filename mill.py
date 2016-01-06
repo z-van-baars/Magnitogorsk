@@ -26,6 +26,7 @@ workers = {
 }
 
 wages = {
+    'Untrained': 5,
     'Smelters': 8,
     'Clerks': 10,
     'Miners': 5,

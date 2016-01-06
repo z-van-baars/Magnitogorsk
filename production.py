@@ -140,12 +140,7 @@ def production_orders():
 
 
 
-def print_salary():
 
-    utilities.clear()
-    for worker in mill.wages:
-        print("%d %s working for %d Rubles per week. (%d)" % (mill.workers[worker], worker, mill.wages[worker], (mill.workers[worker] * mill.wages[worker])))
-    raw_input("> ")
 
 
 # calculates resources consumed and produced every turn

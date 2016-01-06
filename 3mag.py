@@ -147,7 +147,7 @@ def month_loop():
                     print("BUILD")
                 if action == 1:
                     print("PERSONNEL")
-                    # workers()
+                    utilities.print_salary()
                     # personnel
                 if action == 2:
                     print("RESOURCES")
