@@ -6,3 +6,6 @@ of the 20th century.
 
 Every month you receive your production orders and you have 4 weeks to manage
 resources in order to meet your quota - or face the consequences!
+
+
+>"In the Soviet army it takes more courage to retreat than advance."
