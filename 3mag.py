@@ -153,11 +153,12 @@ def month_loop():
                     print("RESOURCES")
                     utilities.salary()
                     utilities.print_res()
+
                     # resources
                 if action == 3:
                     print("PRODUCTION")
                     # production
-                    # production.production_orders()
+                    production.production_orders()
                 if action == 4:
                     print("END TURN")
                     turn_over = True
@@ -165,30 +166,11 @@ def month_loop():
                     # end turn
                 if action == 5:
                     print("QUIT")
-                    turn_over = True
-                    week += 5
                     mill.mill['Defunct'] = 2
 
-                
-                # print("Week: %s" % str(w + 1))
-                
-                # production.salary()
-                # utilities.print_res()
-                # action = raw_input("Do what? > ")
-                # action = string.lower(action)
-                # if action == "r" or action == "resources":
-                #     action = 'none'
-                # elif action == "p" or action == "personnel":
-                #     workers()
-                #     action = 'none'
-                # elif action == "m" or action == "production":
-                #     production.production_orders()
-                #     action = 'none'
-                # elif action == "b" or action == "build":
-                #     build()
-                #     action = 'none'
-                # elif action == "e" or action == "end":
-                #     pass
+                if mill.mill['Defunct'] != 0:
+                    week += 5
+                    turn_over = True
             # production.production()
             # utilities.turn_timer()
             week += 1
@@ -204,7 +186,7 @@ def game_loop():
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                menu_item = "Quit"
+                mill.mill['Defunct'] == 0
         year_disp = True
         while year_disp:
             for event in pygame.event.get():

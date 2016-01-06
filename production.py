@@ -3,6 +3,7 @@ import mill
 import random
 import string
 import utilities
+import pygame
 
 
 def extraction():
@@ -43,13 +44,9 @@ def extraction():
 # set amount of pig iron to produce
 def set_pig_iron(old_smelt):
 
-    mill.mill['Spent Coal'] -= (old_smelt)
-    mill.mill['Spent Iron Ore'] -= (old_smelt)
-    mill.mill['Iron Ore'] += (old_smelt)
-    mill.mill['Coal'] += (old_smelt)
     smelters_max = min((min(mill.mill['Iron Ore'], mill.mill['Coal'])), (mill.workers['Smelters'] * 10))
-    smelt = 'none'
-    utilities.clear()
+    smelt_chosen = False
+
     while smelt == 'none':
         print("Smelters : %s X 10t" % mill.workers['Smelters'])
         print("1t Pig Iron consumes 1t : Iron Ore  and  1t : Coal")
@@ -72,95 +69,142 @@ def set_pig_iron(old_smelt):
     mill.mill['Coal'] -= (mill.orders['Smelt'])
 
 
-def set_steel(old_forge):
+def set_steel():
 
-    mill.mill['Spent Coal'] -= (2 * old_forge)
-    mill.mill['Spent Pig Iron'] -= (2 * old_forge)
-    mill.mill['Pig Iron'] += (2 * old_forge)
-    mill.mill['Coal'] += (2 * old_forge)
-    forge_max = min(min(int(mill.mill['Pig Iron'] / 2), mill.mill['Coal']), (mill.workers['Forgers'] * 10))
+    from assets import menu_font
 
-    forge = 'none'
-    utilities.clear()
-    while forge == 'none':
-        utilities.clear()
-        print("Forgers : %s X 10t" % mill.workers['Forgers'])
-        print("1t Steel consumes 2t : Pig Iron  and  2t : Coal")
-        print("Forge how much Steel? (max : %s tons)" % forge_max)
-        forge = raw_input("> ")
-        try:
-            forge = int(forge)
-        except ValueError:
-            forge = (forge_max + 1)
-        if forge > forge_max or forge < 0:
-            print("Komrade, we cannot produce at that capacity!")
-            forge = 'none'
-        elif forge <= forge_max and forge >= 0:
-            print("Very good Komrade, the Furnaces will produce %s tons of Steel this week!" % forge)
-            mill.orders['Forge'] = forge
-        raw_input("> ")
-    mill.mill['Spent Coal'] += (2 * mill.orders['Forge'])
-    mill.mill['Spent Pig Iron'] += (2 * mill.orders['Forge'])
-    mill.mill['Pig Iron'] -= (2 * mill.orders['Forge'])
-    mill.mill['Coal'] -= (2 * mill.orders['Forge'])
+    forge_chosen = False
+    forge_stamp = menu_font.render(str(mill.orders['Steel']), True, assets.blu_grey)
+    coal_stamp = menu_font.render(str(mill.orders['Steel']), True, assets.blu_grey)
+    pig_iron_stamp = menu_font.render(str(mill.orders['Pig Iron'] * 2), True, assets.blu_grey)
+
+    change_steel = 0
+    change_coal = 0
+    change_pig = 0
+    while not forge_chosen:
+        
+        mill.orders['Steel'] += change_steel
+        mill.spent['Pig Iron'] -= change_pig
+        mill.resources['Pig Iron'] += change_pig
+        mill.spent['Coal'] -= change_coal
+        mill.resources['Coal'] += change_coal
+
+        if mill.orders['Steel'] < 0:
+            mill.orders['Steel'] = 0
+        forge_stamp = menu_font.render(str(mill.orders['Steel']), True, assets.blu_grey)
+        coal_stamp = menu_font.render(str(mill.orders['Steel']), True, assets.blu_grey)
+        pig_iron_stamp = menu_font.render(str(mill.orders['Steel'] * 2), True, assets.blu_grey)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                forge_chosen = True
+                mill.mill['Defunct'] = 2
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    if mill.resources['Pig Iron'] > 1 and mill.resources['Coal'] > 0:
+                        change_steel = 1
+                        change_coal = (-1)
+                        change_pig = (-2)
+                    elif mill.resources['Pig Iron'] <= 1 and mill.resources['Coal'] <= 0:
+                        change_steel = 0
+                        change_coal = 0
+                        change_pig = 0
+
+                if event.key == pygame.K_DOWN and mill.orders['Steel'] > 0:
+
+                    change_steel = (-1)
+                    change_coal = 1
+                    change_pig = 2
+
+                if event.key == pygame.K_RETURN:
+                    forge_chosen = True
+                    assets.click_01.play()
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP:
+                    change_steel = 0
+                    change_coal = 0
+                    change_pig = 0
+                if event.key == pygame.K_DOWN:
+                    change_steel = 0
+                    change_coal = 0
+                    change_pig = 0
+
+
+        assets.screen.blit(assets.set_steel_bg, [0, 0])
+        assets.screen.blit(forge_stamp, [225, 80])
+        assets.screen.blit(coal_stamp, [195, 250])
+        assets.screen.blit(pig_iron_stamp, [195, 330])
+        pygame.display.flip()
+        assets.clock.tick(10)
 
 
 # allows player to assign production
 def production_orders():
 
-    utilities.clear()
-    set_choice = 'none'
-    while set_choice == 'none':
+    prod_chosen = False
+    pointer_pos = 0
+    pointer_locs = [[80, 175], [80, 250], [80, 335], [80, 425]]
+    while not prod_chosen:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                prod_chosen = True
+                mill.mill['Defunct'] = 2
 
-        print("%s tons of Iron Ore will be produced this turn" % (mill.workers['Miners'] * mill.orders['Iron Extract']))
-        print("%s tons of Coal will be produced this turn" % (mill.workers['Miners'] * mill.orders['Coal Extract']))
-        print("\n")
-        print("%s tons of Pig Iron will be produced this turn" % mill.orders['Smelt'])
-        print("\tconsuming %s tons of Iron Ore and %s tons of Coal" % (mill.orders['Smelt'], mill.orders['Smelt']))
-        print("\n")
-        print("%s tons of Steel will be produced this turn" % mill.orders['Forge'])
-        print("\tconsuming %s tons of Pig Iron and %s tons of Coal" % ((mill.orders['Forge'] * 2), mill.orders['Forge']))
-        print("\nSet orders for what?")
-        print("(I)ron and Coal Extraction // (P)ig Iron Smelting // (S)teel Forging")
-        set_choice = raw_input("> ")
-        set_choice = string.lower(set_choice)
-        if set_choice == "i":
-            extraction()
-        elif set_choice == "s":
-            set_steel((mill.orders['Forge']))
-        elif set_choice == "p":
-            set_pig_iron((mill.orders['Smelt']))
-        else:
-            print("Sorry Komrade, I don't understand that.")
-            raw_input("> ")
-            set_choice = 'none'
-            utilities.clear()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP and pointer_pos > 0:
+                    pointer_pos -= 1
+                if event.key == pygame.K_DOWN and pointer_pos < 3:
+                    pointer_pos += 1
+                if event.key == pygame.K_RETURN:
+                    prod_chosen = True
+                    assets.click_01.play()
+
+        # print("%s tons of Iron Ore will be produced this turn" % (mill.workers['Miners'] * mill.orders['Iron Extract']))
+        # print("%s tons of Coal will be produced this turn" % (mill.workers['Miners'] * mill.orders['Coal Extract']))
+        # print("\n")
+        # print("%s tons of Pig Iron will be produced this turn" % mill.orders['Smelt'])
+        # print("\tconsuming %s tons of Iron Ore and %s tons of Coal" % (mill.orders['Smelt'], mill.orders['Smelt']))
+        # print("\n")
+        # print("%s tons of Steel will be produced this turn" % mill.orders['Forge'])
+        # print("\tconsuming %s tons of Pig Iron and %s tons of Coal" % ((mill.orders['Forge'] * 2), mill.orders['Forge']))
+        # print("\nSet orders for what?")
+        # print("(I)ron and Coal Extraction // (P)ig Iron Smelting // (S)teel Forging")
+        # set_choice = raw_input("> ")
+        # set_choice = string.lower(set_choice)
+
+        assets.screen.blit(assets.production_menu, [0, 0])
+        assets.screen.blit(assets.pointer, pointer_locs[pointer_pos])
+        pygame.display.flip()
+        assets.clock.tick(20)
+
+    if pointer_pos == 0:
+        extraction()
+    if pointer_pos == 2:
+        set_steel()
+    if pointer_pos == 1:
+        set_pig_iron((mill.orders['Pig Iron']))
 
 
-
-
-
-
-
-
-# calculates resources consumed and produced every turn
+# calculates resourcs consumed and produced every turn
 def production():
 
     # payroll
-    mill.mill['Rubles'] -= mill.workers['Salary']
+    mill.resources['Rubles'] -= mill.spent['Rubles']
 
     # extraction
-    mill.mill['Iron Ore'] += int(mill.workers['Miners'] * mill.orders['Iron Extract'])
-    mill.mill['Coal'] += int(mill.workers['Miners'] * mill.orders['Coal Extract'])
+    mill.resources['Iron Ore'] += int(mill.workers['Miners'] * mill.orders['Iron Ore'])
+    mill.resources['Coal'] += int(mill.workers['Miners'] * mill.orders['Coal'])
 
     # production
+    mill.resources['Pig Iron'] += mill.orders['Pig Iron']
+    mill.resources['Steel'] += mill.orders['Steel']
 
-    mill.mill['Spent Iron Ore'] = 0
-    mill.mill['Spent Pig Iron'] = 0
-    mill.mill['Spent Coal'] = 0
-    mill.mill['Steel'] += mill.orders['Forge']
-    mill.orders['Forge'] = 0
-    mill.mill['Pig Iron'] += mill.orders['Smelt']
+    mill.spent['Iron Ore'] = 0
+    mill.spent['Pig Iron'] = 0
+    mill.spent['Coal'] = 0
+    mill.orders['Steel'] = 0
     mill.orders['Smelt'] = 0
-    if mill.mill['Rubles'] < 0:
+
+    if mill.resources['Rubles'] < 0:
         mill.mill['Defunct'] = 1

@@ -34,10 +34,13 @@ def demand_splash(demand):
 
 def print_res():
 
+    from assets import menu_font
+
+    disp_res = True
     res_xpos = {
         'Rubles': 95,
         'Steel': 500,
-        'Coal': 160,
+        'Coal': 180,
         'Iron Ore': 250,
         'Pig Iron': 330,
     }
@@ -47,77 +50,24 @@ def print_res():
     prod_stamp = {}
 
     for res_kind in res_xpos:
-        current_stamp[res_kind] = menu_font.render(str(mill.workers[stat_kind]), True, assets.black)
-        wage_stamp[res_kind] = menu_font.render(str(mill.wages[stat_kind]), True, assets.black)
-        total_stamp[res_kind] = menu_font.render(str(mill.workers[stat_kind] * mill.wages[stat_kind]), True, assets.black)
+        current_stamp[res_kind] = menu_font.render(str(mill.resources[res_kind]), True, assets.black)
+        alloc_stamp[res_kind] = menu_font.render(str(mill.spent[res_kind]), True, assets.black)
+        prod_stamp[res_kind] = menu_font.render(str(mill.orders[res_kind]), True, assets.black)
 
-    total_wages_stamp = menu_font.render(str(mill.workers['Salary']), True, assets.gold)
-
-    while disp_wages:
+    while disp_res:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                disp_res = False
+                mill.mill['Defunct'] = 2
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    disp_wages = False
-        assets.screen.blit(assets.wages_bg, [0, 0])
-
-        for stat_kind in stat_xpos:
-            assets.screen.blit(num_stamp[stat_kind], [195, stat_xpos[stat_kind]])
-            assets.screen.blit(wage_stamp[stat_kind], [375, stat_xpos[stat_kind]])
-            assets.screen.blit(total_stamp[stat_kind], [630, stat_xpos[stat_kind]])
-
-
-
-        pygame.display.flip()
-        assets.clock.tick(20)
-
- # old code
-    current_steel_stamp = assets.menu_font.render(str(mill.mill['Steel']), True, assets.black)
-    current_iron_ore_stamp = assets.menu_font.render(str(mill.mill['Iron Ore']), True, assets.black)
-    current_coal_stamp = assets.menu_font.render(str(mill.mill['Coal']), True, assets.black)
-    current_rubles_stamp = assets.menu_font.render(str(mill.mill['Rubles']), True, assets.black)
-    current_pig_iron_stamp = assets.menu_font.render(str(mill.mill['Pig Iron']), True, assets.black)
-
-    alloc_steel_stamp = assets.menu_font.render("N/A", True, assets.black)
-    alloc_iron_ore_stamp = assets.menu_font.render(str(mill.orders['Smelt']), True, assets.black)
-    alloc_coal_stamp = assets.menu_font.render(str(mill.mill['Spent Coal']), True, assets.black)
-    alloc_rubles_stamp = assets.menu_font.render(str(mill.workers['Salary']), True, assets.black)
-    alloc_pig_iron_stamp = assets.menu_font.render(str(mill.orders['Forge'] * 2), True, assets.black)
-
-    prod_steel_stamp = assets.menu_font.render(str(mill.orders['Forge']), True, assets.black)
-    prod_iron_ore_stamp = assets.menu_font.render(str(int(mill.workers['Miners'] * 10)), True, assets.black)
-    prod_coal_stamp = assets.menu_font.render(str(int(mill.workers['Miners'] * 20)), True, assets.black)
-    prod_rubles_stamp = assets.menu_font.render("N/A", True, assets.black)
-    prod_pig_iron_stamp = assets.menu_font.render(str(mill.orders['Forge'] * 2), True, assets.black)
-
-    resource_look = True
-    while resource_look:
-        for event in pygame.event.get():
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    resource_look = False
-
+                    disp_res = False
         assets.screen.blit(assets.resource_screen, [0, 0])
 
-        # current
-        assets.screen.blit(current_rubles_stamp, [195, 95])
-        assets.screen.blit(current_coal_stamp, [195, 160])
-        assets.screen.blit(current_iron_ore_stamp, [195, 250])
-        assets.screen.blit(current_pig_iron_stamp, [195, 330])
-        assets.screen.blit(current_steel_stamp, [195, 500])
-
-        # allocated
-        assets.screen.blit(alloc_rubles_stamp, [375, 95])
-        assets.screen.blit(alloc_coal_stamp, [375, 160])
-        assets.screen.blit(alloc_iron_ore_stamp, [375, 250])
-        assets.screen.blit(alloc_pig_iron_stamp, [375, 330])
-        assets.screen.blit(alloc_steel_stamp, [375, 500])
-
-        # to be produced
-        assets.screen.blit(prod_rubles_stamp, [630, 95])
-        assets.screen.blit(prod_coal_stamp, [630, 160])
-        assets.screen.blit(prod_iron_ore_stamp, [630, 250])
-        assets.screen.blit(prod_pig_iron_stamp, [630, 330])
-        assets.screen.blit(prod_steel_stamp, [630, 500])
+        for res_kind in res_xpos:
+            assets.screen.blit(current_stamp[res_kind], [195, res_xpos[res_kind]])
+            assets.screen.blit(alloc_stamp[res_kind], [375, res_xpos[res_kind]])
+            assets.screen.blit(prod_stamp[res_kind], [630, res_xpos[res_kind]])
 
         pygame.display.flip()
         assets.clock.tick(20)
